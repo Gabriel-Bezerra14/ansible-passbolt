@@ -63,7 +63,7 @@ Aqui você personaliza a sua instalação do Passbolt.
 
 ```yml
 # Variáveis de configuração
-passbolt_install_dir: "/home/monitor/passbolt"
+passbolt_install_dir: "/seu/diretorio/passbolt"
 passbolt_network_name: "passbolt-net"
 passbolt_app_url: "http://ip-sua-vm"
 mysql_user: "passbolt_user"
