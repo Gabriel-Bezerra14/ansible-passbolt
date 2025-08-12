@@ -1,7 +1,7 @@
 # Variáveis de configuração
-passbolt_install_dir: "/home/monitor/passbolt"
+passbolt_install_dir: "/seu/diretorio/passbolt"
 passbolt_network_name: "passbolt-net"
-passbolt_app_url: "http://192.168.128.152"
+passbolt_app_url: "http://ip-sua-vm"
 mysql_user: "passbolt_user"
 mysql_database: "passbolt"
 passbolt_admin_email: "admin@adm.com"

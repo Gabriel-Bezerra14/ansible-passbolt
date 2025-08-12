@@ -37,11 +37,11 @@ Este arquivo informa ao Ansible em qual servidor ele deve trabalhar.
 \# inventory.ini
 ```ini
 [passbolt_servers]
-servidor_passbolt ansible_host=192.168.128.152
+servidor_passbolt ansible_host=ip-sua-vm
 
 [passbolt_servers:vars]
-ansible_user=monitor
-ansible_password=monitor*(89
+ansible_user=user
+ansible_password=password
 ```
 
 ### **2\. Configuração do Ansible (ansible.cfg)**
@@ -65,7 +65,7 @@ Aqui você personaliza a sua instalação do Passbolt.
 # Variáveis de configuração
 passbolt_install_dir: "/home/monitor/passbolt"
 passbolt_network_name: "passbolt-net"
-passbolt_app_url: "http://192.168.128.152"
+passbolt_app_url: "http://ip-sua-vm"
 mysql_user: "passbolt_user"
 mysql_database: "passbolt"
 passbolt_admin_email: "admin@adm.com"
