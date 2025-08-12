@@ -1,0 +1,22 @@
+- name: Verificar se os componentes já estão instalados
+  block:
+    - name: Verificar se o pip3 já está instalado
+      stat:
+        path: /usr/bin/pip3
+      register: pip3_binary
+  tags: [always]
+
+- name: Instalar dependências Python para o Ansible
+  block:
+    - name: Instalar o pip (gerenciador de pacotes Python)
+      apt:
+        name: python3-pip
+        state: present
+        update_cache: yes
+      when: not pip3_binary.stat.exists
+
+    - name: Instalar o Docker SDK para Python com o pip
+      apt:
+        name: python3-docker
+        state: present
+  tags: [python_deps]

@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  passbolt_db:
+    image: mariadb:10.6
+    container_name: passbolt_db
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - database_volume:/var/lib/mysql
+    networks:
+      - {{ passbolt_network_name }}
+
+  passbolt:
+    image: passbolt/passbolt:latest-ce
+    container_name: passbolt
+    restart: unless-stopped
+    depends_on:
+      - passbolt_db
+    env_file: .env
+    volumes:
+      - gpg_volume:/etc/passbolt/gpg
+      - jwt_volume:/etc/passbolt/jwt
+    command:
+      [ "/usr/bin/wait-for.sh", "-t", "0", "passbolt_db:3306", "--", "/docker-entrypoint.sh" ]
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - {{ passbolt_network_name }}
+
+volumes:
+    database_volume:
+    gpg_volume:
+    jwt_volume:
+
+networks:
+  {{ passbolt_network_name }}:
+    external: true

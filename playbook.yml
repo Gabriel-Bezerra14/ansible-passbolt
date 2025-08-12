@@ -1,0 +1,8 @@
+- name: Deploy Passbolt Server
+  hosts: passbolt_servers
+  become: true
+
+  roles:
+    - role: docker
+    - role: pip
+    - role: passbolt

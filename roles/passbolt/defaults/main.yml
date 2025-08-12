@@ -1,0 +1,11 @@
+# Variáveis de configuração que não são secretas
+passbolt_install_dir: "/home/monitor/passbolt"
+passbolt_network_name: "passbolt-net"
+passbolt_app_url: "http://192.168.128.152"
+mysql_user: "passbolt_user"
+mysql_database: "passbolt"
+passbolt_admin_email: "admin@adm.com"
+passbolt_admin_firstname: "Admin"
+passbolt_admin_lastname: "User"
+mysql_root_password: 12345678
+mysql_password: 12345

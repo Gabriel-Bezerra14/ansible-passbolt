@@ -1,0 +1,81 @@
+# --- ETAPA 1: Configuração e Deploy do Passbolt ---
+- name: Deploy do Passbolt
+  block:
+    - name: Criar o diretório de instalação do Passbolt
+      file:
+        path: "{{ passbolt_install_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Create Docker network
+      community.docker.docker_network:
+        name: "{{ passbolt_network_name }}"
+        state: present
+
+    - name: Copiar o arquivo de ambiente .env
+      template:
+        src: .env.j2
+        dest: "{{ passbolt_install_dir }}/.env"
+        mode: '0640'
+
+    - name: Copiar o arquivo docker-compose.yml
+      template:
+        src: docker-compose.yml.j2
+        dest: "{{ passbolt_install_dir }}/docker-compose.yml"
+
+    - name: Start Docker Compose project (via shell)
+      shell: docker compose up -d
+      args:
+        chdir: "{{ passbolt_install_dir }}"
+  tags: [passbolt_setup]
+
+# --- ETAPA 2: Criação do Usuário Administrador ---
+- name: Criar o usuário administrador (apenas na primeira vez)
+  block:
+    - name: Verificar se o usuário admin já foi criado
+      stat:
+        path: "{{ passbolt_install_dir }}/.admin_created"
+      register: admin_marker
+
+    - name: Aguardar que o container passbolt esteja rodando
+      shell: docker compose ps -q passbolt
+      args:
+        chdir: "{{ passbolt_install_dir }}"
+      register: passbolt_container
+      until: passbolt_container.stdout != ""
+      retries: 30
+      delay: 10
+      changed_when: false
+
+    - name: Aguardar que o container do banco de dados esteja rodando
+      shell: docker compose ps -q passbolt_db
+      args:
+        chdir: "{{ passbolt_install_dir }}"
+      register: db_container
+      until: db_container.stdout != ""
+      retries: 30
+      delay: 10
+      changed_when: false
+
+    - name: Esperar 20 segundos
+      pause:
+        seconds: 20
+
+    - name: Registrar o usuário admin via linha de comando
+      shell: >
+        docker compose exec -T passbolt
+        su -m -c '/usr/share/php/passbolt/bin/cake passbolt register_user
+        -u {{ passbolt_admin_email }}
+        -f {{ passbolt_admin_firstname }}
+        -l {{ passbolt_admin_lastname }}
+        -r admin' -s /bin/sh www-data
+      args:
+        chdir: "{{ passbolt_install_dir }}"
+      register: admin_creation_result
+      when: not admin_marker.stat.exists
+
+    - name: Exibir o link de registro do admin
+      debug:
+        msg: "Link para registro do admin: {{ admin_creation_result.stdout }}"
+      when: admin_creation_result is changed
+  tags: [passbolt_user]
