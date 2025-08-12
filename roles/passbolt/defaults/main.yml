@@ -1,4 +1,4 @@
-# Variáveis de configuração que não são secretas
+# Variáveis de configuração
 passbolt_install_dir: "/home/monitor/passbolt"
 passbolt_network_name: "passbolt-net"
 passbolt_app_url: "http://192.168.128.152"
